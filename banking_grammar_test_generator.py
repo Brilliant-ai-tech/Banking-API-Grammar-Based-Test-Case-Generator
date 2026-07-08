@@ -111,9 +111,9 @@ BRANCHES = ["Nairobi_CBD", "Mombasa_Road", "Kisumu", "Eldoret", "Nakuru"]
 REQUEST_CLASSES = ["TRANSFER", "BALANCE", "STATEMENT", "FREEZE", "WITHDRAW"]
 
 
-# ---------------------------------------------------------------------
+# ----------------------------------------------------
 # 2. TERMINAL / LEXICAL GENERATORS
-# ---------------------------------------------------------------------
+# ----------------------------------------------------
 def gen_account():
     """Account -> ACC Digit Digit Digit  (extended to 3-4 digits for realism)"""
     return "ACC" + "".join(random.choice(string.digits) for _ in range(3))
