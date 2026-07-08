@@ -1,0 +1,90 @@
+======================================================================
+PART A: VALID TEST CASE GENERATION (>=30 required)
+======================================================================
+V01 [ TRANSFER] TRANSFER amount 82499 from ACC167 to ACC097;
+V02 [  BALANCE] BALANCE account ACC994;
+V03 [STATEMENT] STATEMENT account ACC023 for month July;
+V04 [   FREEZE] FREEZE account ACC243 reason kyc_pending;
+V05 [ WITHDRAW] WITHDRAW amount 97405 from ACC033 at Eldoret;
+V06 [ TRANSFER] TRANSFER amount 39893 from ACC818 to ACC250;
+V07 [  BALANCE] BALANCE account ACC404;
+V08 [STATEMENT] STATEMENT account ACC232 for month October;
+V09 [   FREEZE] FREEZE account ACC077 reason fraud_alert;
+V10 [ WITHDRAW] WITHDRAW amount 32561 from ACC224 at Nairobi_CBD;
+V11 [ TRANSFER] TRANSFER amount 23990 from ACC094 to ACC065;
+V12 [  BALANCE] BALANCE account ACC888;
+V13 [STATEMENT] STATEMENT account ACC199 for month October;
+V14 [   FREEZE] FREEZE account ACC868 reason fraud_alert;
+V15 [ WITHDRAW] WITHDRAW amount 17384 from ACC722 at Kisumu;
+V16 [ TRANSFER] TRANSFER amount 38619 from ACC994 to ACC495;
+V17 [  BALANCE] BALANCE account ACC807;
+V18 [STATEMENT] STATEMENT account ACC629 for month July;
+V19 [   FREEZE] FREEZE account ACC854 reason suspicious_activity;
+V20 [ WITHDRAW] WITHDRAW amount 5481 from ACC320 at Mombasa_Road;
+V21 [ TRANSFER] TRANSFER amount 8444 from ACC514 to ACC312;
+V22 [  BALANCE] BALANCE account ACC079;
+V23 [STATEMENT] STATEMENT account ACC277 for month February;
+V24 [   FREEZE] FREEZE account ACC914 reason suspicious_activity;
+V25 [ WITHDRAW] WITHDRAW amount 7948 from ACC895 at Nairobi_CBD;
+V26 [ TRANSFER] TRANSFER amount 2771 from ACC723 to ACC488;
+V27 [  BALANCE] BALANCE account ACC590;
+V28 [STATEMENT] STATEMENT account ACC656 for month July;
+V29 [   FREEZE] FREEZE account ACC228 reason court_order;
+V30 [ WITHDRAW] WITHDRAW amount 89668 from ACC561 at Kisumu;
+
+======================================================================
+PART B: PARSE TREE DEMONSTRATION (2+ required)
+======================================================================
+
+Input: TRANSFER amount 82499 from ACC167 to ACC097;
+(S (TRANSFER_REQ TRANSFER amount NUM from ACCOUNT to ACCOUNT))
+                         S                          
+                         |                           
+                    TRANSFER_REQ                    
+    _____________________|______________________     
+TRANSFER amount NUM     from     ACCOUNT  to ACCOUNT
+
+
+Input: FREEZE account ACC243 reason kyc_pending;
+(S (FREEZE_REQ FREEZE account ACCOUNT reason (REASON kyc_pending)))
+                   S                        
+                   |                         
+               FREEZE_REQ                   
+   ________________|__________________       
+  |       |        |        |       REASON  
+  |       |        |        |         |      
+FREEZE account  ACCOUNT   reason kyc_pending
+
+
+======================================================================
+PART C: PARSING ALL VALID CASES (sanity check)
+======================================================================
+Valid cases accepted by parser: 30/30
+
+======================================================================
+PART D: INVALID TEST CASE GENERATION (>=15 required)
+======================================================================
+I01 [missing_keyword          ] TRANSFER 39893 from ACC818 to ACC250;
+I02 [swapped_preposition      ] STATEMENT account ACC232 at month October;
+I03 [unknown_transaction_type ] TRANSFR account ACC023 for month July;
+I04 [duplicated_clause        ] STATEMENT account ACC023 for month July month July;
+I05 [malformed_account_number ] STATEMENT account 12345 for month July;
+I06 [malformed_amount         ] WITHDRAW amount five_thousand from ACC320 at Mombasa_Road;
+I07 [wrong_case_keyword       ] withdraw amount 17384 from ACC722 at Kisumu;
+I08 [missing_semicolon        ] BALANCE account ACC590
+I09 [reordered_tokens         ] BALANCE ACC807 account;
+I10 [truncated_request        ] BALANCE
+I11 [invalid_enumerated_value ] FREEZE account ACC228 reason Mars_Base_Branch;
+I12 [unexpected_extra_token   ] FREEZE account ACC868 reason fraud_alert ***;
+I13 [injection_attempt        ] FREEZE account ACC228 reason court_order;; SELECT * FROM accounts;
+I14 [overflow_amount          ] TRANSFER amount 9999999999999999999999999 from ACC723 to ACC488;
+I15 [swapped_field_types      ] TRANSFER ACC783 amount to 98807;
+
+======================================================================
+PART E: CONFIRMING INVALID CASES ARE REJECTED (or flagged) BY PARSER
+======================================================================
+  NOT CAUGHT by CFG parser (needs semantic/lexical rule): [missing_semicolon] BALANCE account ACC590
+  NOT CAUGHT by CFG parser (needs semantic/lexical rule): [overflow_amount] TRANSFER amount 9999999999999999999999999 from ACC723 to ACC488;
+
+Invalid cases rejected by pure syntax parser: 13/15
+Invalid cases that slipped past pure CFG parsing (need extra lexical/semantic checks): 2/15
